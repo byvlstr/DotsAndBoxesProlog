@@ -61,12 +61,17 @@ utility([_,draw,_],0). %no one win
 utility([toto,play,B], (ScoreToto-ScoreTiti)/ScoreMax) :- score([toto,_,B],ScoreToto,ScoreTiti).
 utility([titi,play,B], (ScoreTiti-ScoreToto)/ScoreMax) :- score([titi,_,B],ScoreToto,ScoreTiti).
 
+% flatList(List[List], List)
+% This will override flatten, but it works only for
+% a list composed with a single element.
+flatList([L],L).
+flatList(L,L).
+
 % boardH(Board, BoardH)
 % This function will return the heuristic value 
 % associated with each position of the board.
-boardH(L, BH) :- flatten(L,L1), sumBits(L1, BH).
-boardH([L1|L2],BH) :- sumBits([], S), boardH(L1, BH1), append(S,BH1,BH).
-
+boardH([],[]).
+boardH([L1|L2],BH) :- flatList(L1,L1f), sumBits(L1f, S), boardH(L2,BH1), addList(S,BH1,BH).
 % sumBits(L,sum)
 % This function computes the sum of all bits in L
 sumBits([],0).
@@ -79,5 +84,9 @@ equal(X,X,X,X,X,X,X,X,X).
 % addTreeCounter(TreeCounter,NewTreeCounter)
 % This function will be used to stop the search in the tree
 addTreeCounter(X,Y) :- Y is X + 1.
+
+% addList(X, List, List+X)
+% This function will add X to the List
+addList(X,L,[X|L]).
 
 
