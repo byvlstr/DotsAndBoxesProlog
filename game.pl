@@ -24,6 +24,7 @@ play(Board,UserScore,ComputerScore,Player) :-
     Player = computer, 	
     	computerPlay(Board,NewBoard,ComputerScore,NewComputerScore,NextPlayer),
     	play(NewBoard,UserScore,NewComputerScore,NextPlayer).
+    	
 
 
 % Predicate user player/5
