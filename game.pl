@@ -24,7 +24,6 @@ play(Board,UserScore,ComputerScore,Player) :-
     Player = computer, 	
     	computerPlay(Board,NewBoard,ComputerScore,NewComputerScore,NextPlayer),
     	play(NewBoard,UserScore,NewComputerScore,NextPlayer).
-    	
 
 
 % Predicate user player/5
@@ -35,9 +34,9 @@ play(Board,UserScore,ComputerScore,Player) :-
 % -NextPlaying@ const: [ user | computer ] it's the next player turn
 userPlay(Board,NewBoard,OldScore,NewScore,NextPlayer) :- 
 	write('Play : '), 
-	read(Index1), read(Index2),
-    putEdge(Board, [Index1, Index2], [Value1,Value2], NewBoard),
-    score([Value1,Value2],OldScore,NewScore,user,NextPlayer).
+	read(Action), read(Index),
+    move(Action,Board,Index,[Value,ValueNeighbor],NewBoard),
+    score([Value,ValueNeighbor],OldScore,NewScore,user,NextPlayer).
 
 % Predicate computer player/5
 % +Board@ list: board game
@@ -48,7 +47,8 @@ userPlay(Board,NewBoard,OldScore,NewScore,NextPlayer) :-
 computerPlay(Board,NewBoard,OldScore,NewScore,NextPlayer) :- 
     write('Computer playing...'), nl, 
     % Here call for IA( Index1, Index2 ) algorithme :D
-    putEdge(Board, [0, 0], [Value1, Value2], NewBoard),
+    %putEdge(Board, [0, 0], [Value1, Value2], NewBoard),
+    NewBoard = Board,
     score([1,1],OldScore,NewScore,computer,NextPlayer).
 
 % Calculate Score
@@ -71,10 +71,61 @@ nextPlayer(user,computer).
 nextPlayer(computer,user).
 
 % Predicate move edge
-putEdge(Board, [Index1, Index2], [Value1, Value2], NewBoard) :-
-    % Predicate convert here !!
-    NewBoard = Board.
+% putEdge(Board, [Action, Index], [Value1, Value2], NewBoard) :- .
+
+
+% Move bottom edge
+move(bottom, Board, Index, [NewValue, 0], NewBoard) :-
+    % Extract if the bit of bottom is not setted
+    nth0(Index,Board,CurrentValue),
+    Bit is CurrentValue /\ 8, Bit \= 8, 
+    NewValue is CurrentValue + 8,
+    replace(Board, Index, NewValue, NewBoard).
+
+% Move top edge
+move(top, Board, Index, [NewValue], NewBoard) :-
+    % Extract if the bit of top is not setted
+    nth0(Index,Board,CurrentValue),
+    Bit is CurrentValue /\ 2, Bit \= 2, 
+    NewValue is CurrentValue + 2,
+    replace(Board, Index, NewValue, NewBoard).
+
+% Move top edge for Indexs [0,1,2]
+move(top, Board, Index, [NewValue, NewValueNeighbor], NewBoard) :-
+	member(Index, [0,1,2]),
+    move(top, Board, Index, NewValue, NewBoard),
+    NewValueNeighbor = 0;
     
+    NIndex is Index - 3,
+    move(top, Board, Index, NewValue, R),
+    move(bottom, R, NIndex, NewValueNeighbor, NewBoard).
+
+% Move left edge
+move(left, Board, Index, [NewValue, 0], NewBoard) :-
+    nth0(Index,Board,CurrentValue),
+    Bit is CurrentValue /\ 4, Bit \= 4, 
+    NewValue is CurrentValue + 4,
+    replace(Board, Index, NewValue, NewBoard).
+
+% Move right edge
+move(right, Board, Index, [NewValue], NewBoard) :-
+    % Extract if the bit of right is not setted
+    nth0(Index,Board,CurrentValue),
+    Bit is CurrentValue /\ 1, Bit \= 1, 
+    NewValue is CurrentValue + 1,
+    replace(Board, Index, NewValue, NewBoard).
+
+% Move right edge
+move(right, Board, Index, [NewValue, NewValueNeighbor], NewBoard) :-
+    member(Index, [2,5,8]),
+    move(top, Board, Index, NewValue, NewBoard),
+    NewValueNeighbor = 0;
+    
+    NIndex is Index + 1,
+    move(right, Board, Index, NewValue, R),
+    move(left, R, NIndex, NewValueNeighbor, NewBoard).
+    
+   
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Include files
 % Creation de la liste
