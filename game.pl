@@ -102,12 +102,12 @@ move(top, Board, Index, [NewValue], NewBoard) :-
 % Move top edge for Indexs [0,1,2]
 move(top, Board, Index, [NewValue, NewValueNeighbor], NewBoard) :-
 	member(Index, [0,1,2]),
-    move(top, Board, Index, NewValue, NewBoard),
+    move(top, Board, Index, [NewValue], NewBoard),
     NewValueNeighbor = 0;
     
     NIndex is Index - 3,
     move(top, Board, Index, NewValue, R),
-    move(bottom, R, NIndex, NewValueNeighbor, NewBoard).
+    move(bottom, R, NIndex, [NewValueNeighbor, 0], NewBoard).
 
 % Move left edge
 move(left, Board, Index, NewValue, NewBoard) :-
@@ -140,8 +140,8 @@ move(right, Board, Index, [NewValue, NewValueNeighbor], NewBoard) :-
     NewValueNeighbor = 0;
     
     NIndex is Index + 1,
-    move(right, Board, Index, NewValue, R),
-    move(left, R, NIndex, NewValueNeighbor, NewBoard).
+    move(right, Board, Index, [NewValue], R),
+    move(left, R, NIndex, [NewValueNeighbor, 0], NewBoard).
     
    
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
