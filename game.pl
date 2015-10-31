@@ -75,12 +75,21 @@ nextPlayer(computer,user).
 
 
 % Move bottom edge
-move(bottom, Board, Index, [NewValue, 0], NewBoard) :-
+move(bottom, Board, Index, NewValue, NewBoard) :-
     % Extract if the bit of bottom is not setted
     nth0(Index,Board,CurrentValue),
     Bit is CurrentValue /\ 8, Bit \= 8, 
     NewValue is CurrentValue + 8,
     replace(Board, Index, NewValue, NewBoard).
+
+move(bottom, Board, Index, [NewValue, NewValueNeighbor], NewBoard) :-
+	member(Index, [6,7,8]),
+    move(bottom, Board, Index, NewValue, NewBoard),
+    NewValueNeighbor = 0;
+    
+    NIndex is Index + 3,
+    move(bottom, Board, Index, NewValue, R),
+    move(top, R, NIndex, NewValueNeighbor, NewBoard).
 
 % Move top edge
 move(top, Board, Index, [NewValue], NewBoard) :-
@@ -101,11 +110,20 @@ move(top, Board, Index, [NewValue, NewValueNeighbor], NewBoard) :-
     move(bottom, R, NIndex, NewValueNeighbor, NewBoard).
 
 % Move left edge
-move(left, Board, Index, [NewValue, 0], NewBoard) :-
+move(left, Board, Index, NewValue, NewBoard) :-
     nth0(Index,Board,CurrentValue),
     Bit is CurrentValue /\ 4, Bit \= 4, 
     NewValue is CurrentValue + 4,
     replace(Board, Index, NewValue, NewBoard).
+
+move(left, Board, Index, [NewValue, NewValueNeighbor], NewBoard) :-
+    member(Index, [0,3,6]),
+    move(left, Board, Index, NewValue, NewBoard),
+    NewValueNeighbor = 0;
+    
+    NIndex is Index - 1,
+    move(left, Board, Index, NewValue, R),
+    move(right, R, NIndex, NewValueNeighbor, NewBoard).
 
 % Move right edge
 move(right, Board, Index, [NewValue], NewBoard) :-
@@ -118,7 +136,7 @@ move(right, Board, Index, [NewValue], NewBoard) :-
 % Move right edge
 move(right, Board, Index, [NewValue, NewValueNeighbor], NewBoard) :-
     member(Index, [2,5,8]),
-    move(top, Board, Index, NewValue, NewBoard),
+    move(right, Board, Index, NewValue, NewBoard),
     NewValueNeighbor = 0;
     
     NIndex is Index + 1,
