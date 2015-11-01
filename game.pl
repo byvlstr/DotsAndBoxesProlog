@@ -145,10 +145,10 @@ computerPlay(Board,NewBoard,OldScore,NewScore,NextPlayer) :-
 % Calculate Score
 score([Value1,Value2],OldScore,NewScore,CurrentPlayer,NextPlayer) :- 
     	(   Value1 = 15, Value2 = 15 ),
-    	NewScore is OldScore + 2,
+    	NewScore is OldScore + 2,!,
     	NextPlayer = CurrentPlayer;
     	(   Value1 = 15; Value2 = 15 ), 
-    	NewScore is OldScore + 1, 
+    	NewScore is OldScore + 1,!, 
     	NextPlayer = CurrentPlayer;
     	NewScore is OldScore, nextPlayer(CurrentPlayer,NextPlayer).
 
