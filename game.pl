@@ -178,7 +178,7 @@ border(right,[2,5,8]).
 %[NextPlayer,NextBoard,NewScore] represents NextPos
 move(Action,Index,[Player,Board,OldScore],[NextPlayer,NextBoard,NewScore]) :-
     checkMove(Action,Board,Index),
-    moveaux(Action,Board,Index,[NewValue,ValueNeighbour],NextBoard),!,
+    moveaux(Action,Board,Index,[NewValue,ValueNeighbour],NextBoard),
     score([NewValue,ValueNeighbour],OldScore,NewScore,Player,NextPlayer).
     
 %predicate that actually handles the "physical move"
@@ -188,7 +188,7 @@ moveaux(Action,Board,Index,[NewValue,ValueNeighbour],NewBoard) :-
     action(Action,Bit),
     NewValue is CurrentValue + Bit,   
     replace(Board,Index,NewValue,TmpBoard),
-	moveNeighbour(Action,TmpBoard,Index,ValueNeighbour,NewBoard).
+	moveNeighbour(Action,TmpBoard,Index,ValueNeighbour,NewBoard),!.
 
 %Predicate to handle to move of a neighbour box
 moveNeighbour(Action,Board,Index,NewValue,NewBoard):-
