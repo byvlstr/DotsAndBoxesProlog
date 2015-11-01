@@ -27,7 +27,7 @@ betterOf(Pos0, Val0, _, Val1, Pos0, Val0) :-   % Pos0 better than Pos1
     Val0 < Val1, !                             % MAX prefers the greater value
     ;
     max_to_move(Pos0),                         % MAX to move in Pos0
-    Val0 < Val1, !.                            % MIN prefers the lesser value
+    Val0 > Val1, !.                            % MIN prefers the lesser value
 
 betterOf(_, _, Pos1, Val1, Pos1, Val1).        % Otherwise Pos1 better than Pos0
 
@@ -190,6 +190,7 @@ border(right,[2,5,8]).
 %[Player,Board,OldScore] represents Pos
 %[NextPlayer,NextBoard,NewScore] represents NextPos
 move(Action,Index,[Player,Board,OldScore],[NextPlayer,NextBoard,NewScore]) :-
+    checkMove(Action,Board,Index),
     moveaux(Action,Board,Index,[NewValue,ValueNeighbour],NextBoard),
     score([NewValue,ValueNeighbour],OldScore,NewScore,Player,NextPlayer).
     
@@ -215,6 +216,22 @@ moveNeighbour(Action,Board,Index,NewValue,NewBoard):-
                                      replace(Board,NewIndex,NewValue,NewBoard));
 	%else do not change the board    
 	NewBoard = Board,NewValue = 0  ). 
+
+%To check if a move is legal(i.e. if the edge has already been drawn)
+checkMove(Action,Board,Index):-
+    nth0(Index,Board,CurrentValue),
+    action(Action,Bit),
+    neigh(Action,Offset,Bit2),
+    NeighIndex is Index + Offset,
+    nth0(NeighIndex,Board,NeighValue),
+    check(CurrentValue,NeighValue,Bit,Bit2).
+
+check(CurrentValue,NeighValue,Bit,Bit2):-
+    Check1 is CurrentValue /\ Bit,
+    Check2 is NeighValue /\ Bit2,
+    not(Check1 is Bit),
+    not(Check2 is Bit2).
+    
     
    
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
