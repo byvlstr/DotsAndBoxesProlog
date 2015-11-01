@@ -1,0 +1,36 @@
+% Sample code to create a prolog web service
+% Currently it only retrieves 3 integers from the url parameters, sums them and returns the result as JSON
+% Now I need to adapt it to the game system...
+
+% You can easily try on your own computer by following these steps :
+% -Load this file in prolog
+% -Execute ?-server(5000).
+% -On your web browser, go to http://localhost:5000/test?val1=1&val2=2&val3=3
+% -It will return {sum :6} (1+2+3) 
+
+:- use_module(library(http/thread_httpd)).
+:- use_module(library(http/http_dispatch)).
+:- use_module(library(http/html_write)).
+:- use_module(library(http/http_parameters)).
+:- use_module(library(uri)).
+
+:- http_handler(root(test), proceed_sum,  []).
+
+server(Port) :-		
+http_server(http_dispatch, [port(Port)]).
+
+proceed_sum(Request) :- http_parameters(Request,
+[ val1(Val1, [integer]), val2(Val2, [integer]), val3(Val3, [integer])
+]),
+format('Content-type: text/plain~n~n'),
+writeSum([Val1,Val2,Val3]).
+
+writeSum([H|T]) :- sum_list([H|T], X),
+format('{sum :'),
+format('~d', X),
+format('}').
+
+sum_list([], 0).
+sum_list([H|T], Sum) :-
+sum_list(T, Rest),
+Sum is H + Rest.
