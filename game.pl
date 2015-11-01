@@ -191,7 +191,7 @@ border(right,[2,5,8]).
 %[NextPlayer,NextBoard,NewScore] represents NextPos
 move(Action,Index,[Player,Board,OldScore],[NextPlayer,NextBoard,NewScore]) :-
     checkMove(Action,Board,Index),
-    moveaux(Action,Board,Index,[NewValue,ValueNeighbour],NextBoard),
+    moveaux(Action,Board,Index,[NewValue,ValueNeighbour],NextBoard),!,
     score([NewValue,ValueNeighbour],OldScore,NewScore,Player,NextPlayer).
     
 %predicate that actually handles the "physical move"
