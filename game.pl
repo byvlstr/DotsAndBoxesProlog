@@ -138,7 +138,7 @@ userPlay(Board,NewBoard,OldScore,NewScore,NextPlayer) :-
 % -NextPlaying@ const: [ user | computer ] it's the next player turn
 computerPlay(Board,NewBoard,OldScore,NewScore,NextPlayer) :- 
     write('Computer playing...'), nl, 
-    minimax([computer,Board,OldScore],[NextPlayer,NewBoard,NewScore],0,0),
+    minimax([computer,Board,OldScore],[NextPlayer,NewBoard,NewScore],_,0),
     %putEdge(Board, [0, 0], [Value1, Value2], NewBoard),
     NewBoard = NextBoard.
 
@@ -209,7 +209,7 @@ moveNeighbour(Action,Board,Index,NewValue,NewBoard):-
     neigh(Action,Offset,Bit),
     
 	%use of if -> then; else
-	%if our box is a border case
+	%if our box is not a border case
     (  not(member(Index,Limit)) ->  (  NewIndex is Index+Offset,
                                      nth0(NewIndex,Board,CurrentValue),
                                      NewValue is CurrentValue+Bit,
@@ -221,16 +221,24 @@ moveNeighbour(Action,Board,Index,NewValue,NewBoard):-
 checkMove(Action,Board,Index):-
     nth0(Index,Board,CurrentValue),
     action(Action,Bit),
-    neigh(Action,Offset,Bit2),
-    NeighIndex is Index + Offset,
-    nth0(NeighIndex,Board,NeighValue),
-    check(CurrentValue,NeighValue,Bit,Bit2).
+    check(CurrentValue,Bit),
+    checkNeighbour(Action,Board,Index).
 
-check(CurrentValue,NeighValue,Bit,Bit2):-
-    Check1 is CurrentValue /\ Bit,
-    Check2 is NeighValue /\ Bit2,
-    not(Check1 is Bit),
-    not(Check2 is Bit2).
+checkNeighbour(Action,Board,Index):-
+    action(Action,Bit),
+    border(Action,Limit),
+    neigh(Action,Offset,Bit2),
+    
+    (  not(member(Index,Limit)) ->  (  NewIndex is Index+Offset,
+                                     nth0(NewIndex,Board,CurrentValue),
+                                     check(CurrentValue,Bit2));
+	%else do not change the board    
+	true ). 
+    
+    
+check(CurrentValue,Bit):-
+    Check is CurrentValue /\ Bit,
+    not(Check is Bit).
     
     
    
