@@ -1,0 +1,179 @@
+<!-- First version of the GUI.
+Displays the grid and scores. However the layout isn't responsive so it may not look as great as it does on my 15".
+Remains to make all the javascript stuff to communicate with the prolog server.-->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Dots and boxes</title>
+<style type="text/css">
+body {
+	font-family:"helvetica neue";
+	color:#393939;
+}
+table {
+	width:600px;
+	height:600px;
+}
+table td { 
+	width:200px;
+	height:200px;
+	position: relative;
+}
+.point {
+	position: absolute;
+	width: 20px;
+	height: 20px;
+	background-color: rgb(5, 160, 255);
+	z-index: 10;
+	border-radius: 50%;
+}
+.border {
+	background-color: #FAFAFA;
+	cursor:pointer;
+	transition:0.3s ease all;
+}
+.border:hover {
+	background-color: #5e4448;
+	transition:0.3s ease all;
+}
+.border.on {
+	background-color: rgb(5, 160, 255);
+	cursor:none;
+}
+.border.left {
+	width: 8px;
+	height: 100%;
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+.border.top {
+	width: 100%;
+	height: 8px;
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+.border.right {
+	width: 8px;
+	height: 100%;
+	position: absolute;
+	top: 0;
+	right: 0;
+}
+.border.bottom {
+	width: 100%;
+	height: 8px;
+	position: absolute;
+	bottom: 0;
+	left: 0;
+}
+.score.left {
+	float: left;
+	width: 25%;
+	text-align: right
+}
+.score.right {
+	float: right;
+	width: 25%;
+	text-align: left
+}
+</style>
+
+<script src="jquery-1.7.2.min.js"></script>
+<script type="text/javascript">
+$(document).on("click", ".border:not(.on)", function() {
+	$(this).addClass("on");
+});
+</script>
+
+</head>
+<div class="score left">
+	<h2>Vous</h2>
+      <p>0</p>
+</div>
+<div class="score right">
+	<h2>Ordinateur</h2>
+      <p>0</p>
+</div>
+
+<table border="0" cellspacing="0" align="center">
+	<tr>
+      	<td>
+            	<div class="point" style="left: -5px;top: -5px;"></div>
+                  
+            	<div class="border left"></div>
+            	<div class="border top"></div>
+            	<div class="border right"></div>
+            	<div class="border bottom"></div>
+             </td>
+      	<td>
+            	<div class="point" style="left: -13px;top: -6px;"></div>
+                  
+            	<div class="border top"></div>
+            	<div class="border right"></div>
+            	<div class="border bottom"></div>
+            </td>
+      	<td>
+            	<div class="point" style="left: -13px;top: -6px;"></div>
+            	<div class="point" style="right: -5px;top: -6px;"></div>
+      
+            	<div class="border top"></div>
+            	<div class="border right"></div>
+            	<div class="border bottom"></div>
+           </td>
+      </tr>
+	<tr>
+      	<td>
+            	<div class="point" style="left: -5px;top: -13px;"></div>
+                  
+            	<div class="border left"></div>
+            	<div class="border right"></div>
+            	<div class="border bottom"></div>
+             </td>
+      	<td>
+            	<div class="point" style="left: -13px;top: -13px;"></div>
+                  
+            	<div class="border right"></div>
+            	<div class="border bottom"></div>
+            </td>
+      	<td>
+            	<div class="point" style="left: -13px;top: -13px;"></div>
+            	<div class="point" style="right: -5px;top: -13px;"></div>
+                  
+            	<div class="border right"></div>
+            	<div class="border bottom"></div>
+           </td>
+      </tr>
+	<tr>
+      	<td>
+            	<div class="point" style="left: -5px;top: -13px;"></div>
+            	<div class="point" style="left: -5px;bottom: -5px;"></div>
+                  
+            	<div class="border left"></div>
+            	<div class="border right"></div>
+            	<div class="border bottom"></div>
+             </td>
+      	<td>
+            	<div class="point" style="left: -13px;top: -13px;"></div>
+            	<div class="point" style="left: -13px;bottom: -5px;"></div>
+                  
+            	<div class="border right"></div>
+            	<div class="border bottom"></div>
+            </td>
+      	<td>
+            	<div class="point" style="left: -13px;top: -13px;"></div>
+            	<div class="point" style="right: -5px;top: -13px;"></div>
+            	<div class="point" style="left: -13px;bottom: -5px;"></div>
+            	<div class="point" style="right: -5px;bottom: -5px;"></div>
+                  
+            	<div class="border right"></div>
+            	<div class="border bottom"></div>
+           </td>
+      </tr>
+</table>
+<body>
+</body>
+</html>
