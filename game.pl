@@ -3,13 +3,13 @@
 % minimax(Pos, BestNextPos, Val)
 % Pos is a position, Val is its minimax value.
 % Best move from Pos leads to position BestNextPos.
+minimax(Pos, BestNextPos, Val, 3) :-                     % Pos has successors
+	utility(Pos, Val).
+
 minimax(Pos, BestNextPos, Val, TreeCounter) :-                     % Pos has successors
-    TreeCounter < 4,
     addTreeCounter(TreeCounter, NextTreeCounter),
-    bagof(NextPos, move(Action,Index,Pos, NextPos), NextPosList), % We get all possible NextPos from move
-    best(NextPosList, BestNextPos, Val, NextTreeCounter), !.
-
-
+    findall(NextPos, move(Action,Index,Pos, NextPos), NextPosList), % We get all possible NextPos from move
+    best(NextPosList, BestNextPos, Val, NextTreeCounter),!.
 
 minimax(Pos, _, Val, _) :-                     % Pos has no successors
     utility(Pos, Val).						   % End of the tree
@@ -62,22 +62,9 @@ utility([_,draw,_],0). %no one win
 %simple heuristic that takes the potential score and divides it by the total score
 utility([user,B,Score], Val) :- Val is Score/9.
 utility([computer,B,Score], Val) :- Val is Score/9.
+utility([_,B,0],0).
 
-% flatList(List[List], List)
-% This will override flatten, but it works only for
-% a list composed with a single element.
-flatList([L],L).
-flatList(L,L).
-
-% boardH(Board, BoardH)
-% This function will return the heuristic value 
-% associated with each position of the board.
-boardH([],[]).
-boardH([L1|L2],BH) :- flatList(L1,L1f), sumBits(L1f, S), boardH(L2,BH1), addList(S,BH1,BH).
-% sumBits(L,sum)
-% This function computes the sum of all bits in L
-sumBits([],0).
-sumBits([X|L], S) :- sumBits(L, S1), S is S1 + X.
+boardH(
       
 %equal True if they are the same
 %Opti à faire : equal pour dimension illimitée
