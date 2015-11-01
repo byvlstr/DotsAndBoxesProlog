@@ -3,7 +3,7 @@
 % minimax(Pos, BestNextPos, Val)
 % Pos is a position, Val is its minimax value.
 % Best move from Pos leads to position BestNextPos.
-minimax(Pos, BestNextPos, Val, 3) :-                     % Pos has successors
+minimax(Pos, BestNextPos, Val, 1) :-                     % Pos has successors
 	utility(Pos, Val).
 
 minimax(Pos, BestNextPos, Val, TreeCounter) :-                     % Pos has successors
@@ -23,11 +23,12 @@ best([Pos1 | PosList], BestPos, BestVal, TreeCounter) :-
     betterOf(Pos1, Val1, Pos2, Val2, BestPos, BestVal).
 
 betterOf(Pos0, Val0, _, Val1, Pos0, Val0) :-   % Pos0 better than Pos1
-    min_to_move(Pos0),                         % MIN to move in Pos0
-    Val0 < Val1, !                             % MAX prefers the greater value
-    ;
-    max_to_move(Pos0),                         % MAX to move in Pos0
-    Val0 > Val1, !.                            % MIN prefers the lesser value
+	Val0 > Val1, !.
+%    min_to_move(Pos0),                         % MIN to move in Pos0
+%    Val0 < Val1, !                             % MAX prefers the greater value
+%    ;
+%    max_to_move(Pos0),                         % MAX to move in Pos0
+%    Val0 > Val1, !.                            % MIN prefers the lesser value
 
 betterOf(_, _, Pos1, Val1, Pos1, Val1).        % Otherwise Pos1 better than Pos0
 
@@ -55,14 +56,13 @@ endPos([X1,X2,X3,X4,X5,X6,X7,X8,X9]):-
 
 % utility(Pos, Val)
 % This will return the proper Val for each Pos
-utility([user,win,_],1). %toto win
-utility([computer,win,_],1). %titi win
-utility([_,draw,_],0). %no one win
+%utility([user,win,_],1). %toto win
+%utility([computer,win,_],1). %titi win
+%utility([_,draw,_],0). %no one win
 
 %simple heuristic that takes the potential score and divides it by the total score
 utility([user,B,Score], Val) :- Val is Score/9.
 utility([computer,B,Score], Val) :- Val is Score/9.
-utility([_,B,0],0).
 
 boardH(
       
