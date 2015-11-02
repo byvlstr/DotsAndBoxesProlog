@@ -3,43 +3,54 @@
 % minimax(Pos, BestNextPos, Val)
 % Pos is a position, Val is its minimax value.
 % Best move from Pos leads to position BestNextPos.
-minimax(Pos, BestNextPos, Val, 1) :-                     % Pos has successors
-	utility(Pos, Val).
+minimax(Pos, BestNextPos, Val, 3, Player) :-                     % Pos has successors
+	utility(Pos, Val, Player).
 
-minimax(Pos, BestNextPos, Val, TreeCounter) :-                     % Pos has successors
+minimax(Pos, BestNextPos, Val, TreeCounter, _) :-                     % Pos has successors
+    getPlayer(Pos, PlayerPos),
     addTreeCounter(TreeCounter, NextTreeCounter),
     findall(NextPos, move(Action,Index,Pos, NextPos), NextPosList), % We get all possible NextPos from move
-    best(NextPosList, BestNextPos, Val, NextTreeCounter),!.
+    best(NextPosList, BestNextPos, Val, NextTreeCounter, PlayerPos),!.
 
-minimax(Pos, _, Val, _) :-                     % Pos has no successors
-    utility(Pos, Val).						   % End of the tree
+minimax(Pos, _, Val, _, Player) :-                     % Pos has no successors
+    utility(Pos, Val, Player).						   % End of the tree
 
-best([Pos], Pos, Val, TreeCounter) :-
-    minimax(Pos, _, Val, TreeCounter), !.
+best([Pos], Pos, Val, TreeCounter, Player) :-
+    minimax(Pos, _, Val, TreeCounter, Player), !.
 
-best([Pos1 | PosList], BestPos, BestVal, TreeCounter) :-
-    minimax(Pos1, _, Val1, TreeCounter),
-    best(PosList, Pos2, Val2, TreeCounter),
-    betterOf(Pos1, Val1, Pos2, Val2, BestPos, BestVal).
+best([Pos1 | PosList], BestPos, BestVal, TreeCounter, Player) :-
+    minimax(Pos1, _, Val1, TreeCounter, Player),
+    best(PosList, Pos2, Val2, TreeCounter, Player),
+    betterOf(Pos1, Val1, Pos2, Val2, Player, BestPos, BestVal).
 
-betterOf(Pos0, Val0, _, Val1, Pos0, Val0) :-   % Pos0 better than Pos1
-	Val0 > Val1, !.
-%    min_to_move(Pos0),                         % MIN to move in Pos0
-%    Val0 < Val1, !                             % MAX prefers the greater value
-%    ;
-%    max_to_move(Pos0),                         % MAX to move in Pos0
-%    Val0 > Val1, !.                            % MIN prefers the lesser value
+betterOf(Pos0, Val0, _, Val1, Player, Pos0, Val0) :-   % Pos0 better than Pos1	
+    min_to_move(Pos0), max_now(Player)                        % MIN to move in Pos0
+    Val0 > Val1, !                             % MAX prefers the greater value
+    ;
+    min_to_move(Pos0), min_now(Player)
+    Val0 < Val1, !
+	;   
+    max_to_move(Pos0), max_now(Player)                        % MAX to move in Pos0
+    Val0 > Val1, !                           % MIN prefers the lesser value
+	;   
+	max_to_move(Pos0), min_now(Player)
+	Val0 < Val1, !.
 
-betterOf(_, _, Pos1, Val1, Pos1, Val1).        % Otherwise Pos1 better than Pos0
+betterOf(_, _, Pos1, Val1, Player, Pos1, Val1).        % Otherwise Pos1 better than Pos0
 
 % min_to_move(+Pos)
 % True if the next player to play is the MIN player.
 min_to_move([user, _, _]).
 
+min_now(user).
+
 % max_to_move(+Pos)
 % True if the next player to play is the MAX player.
 max_to_move([computer, _, _]).
 
+max_now(computer).
+
+getPlayer(Pos, Player) :- nth0(0, Pos, Player).
 
 %endPos(Player,Board)
 endPos([X1,X2,X3,X4,X5,X6,X7,X8,X9]):-
@@ -61,10 +72,9 @@ endPos([X1,X2,X3,X4,X5,X6,X7,X8,X9]):-
 %utility([_,draw,_],0). %no one win
 
 %simple heuristic that takes the potential score and divides it by the total score
-utility([user,B,Score], Val) :- Val is Score/9.
-utility([computer,B,Score], Val) :- Val is Score/9.
+utility([user,B,Score], Val, Player) :- Val is Score/9.
+utility([computer,B,Score], Val, Player) :- Val is Score/9.
 
-boardH(
       
 %equal True if they are the same
 %Opti à faire : equal pour dimension illimitée
@@ -125,7 +135,7 @@ userPlay(Board,NewBoard,OldScore,NewScore,NextPlayer) :-
 % -NextPlaying@ const: [ user | computer ] it's the next player turn
 computerPlay(Board,NewBoard,OldScore,NewScore,NextPlayer) :- 
     write('Computer playing...'), nl, 
-    minimax([computer,Board,OldScore],[NextPlayer,NewBoard,NewScore],_,0),
+    minimax([computer,Board,OldScore],[NextPlayer,NewBoard,NewScore],_,0, computer),
     %putEdge(Board, [0, 0], [Value1, Value2], NewBoard),
     NewBoard = NextBoard.
 
