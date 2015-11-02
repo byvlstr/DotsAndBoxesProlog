@@ -86,7 +86,7 @@ table td {
 }
 </style>
 
-<script src="jquery-1.7.2.min.js"></script>
+<script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
 <script type="text/javascript">
 var currentPlayer = "user";
 var currentBoard = [0,0,0,0,0,0,0,0,0];
