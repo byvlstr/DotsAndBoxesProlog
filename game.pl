@@ -1,11 +1,10 @@
-<<<<<<< HEAD
 :- module(minimax, [minimax/3]).
 
 % minimax(Pos, BestNextPos, Val)
 % Pos is a position, Val is its minimax value.
 % Best move from Pos leads to position BestNextPos.
-minimax(Pos, BestNextPos, Val, 3, Player) :-                     % Pos has successors
-	utility(Pos, Val, Player).
+minimax(Pos, BestNextPos, Val, 1, Player) :-                     % Pos has successors
+        utility(Pos, Val, Player).
 
 minimax(Pos, BestNextPos, Val, TreeCounter, _) :-                     % Pos has successors
     getPlayer(Pos, PlayerPos),
@@ -14,7 +13,7 @@ minimax(Pos, BestNextPos, Val, TreeCounter, _) :-                     % Pos has 
     best(NextPosList, BestNextPos, Val, NextTreeCounter, PlayerPos),!.
 
 minimax(Pos, _, Val, _, Player) :-                     % Pos has no successors
-    utility(Pos, Val, Player).						   % End of the tree
+    utility(Pos, Val, Player).                                                   % End of the tree
 
 best([Pos], Pos, Val, TreeCounter, Player) :-
     minimax(Pos, _, Val, TreeCounter, Player), !.
@@ -24,20 +23,21 @@ best([Pos1 | PosList], BestPos, BestVal, TreeCounter, Player) :-
     best(PosList, Pos2, Val2, TreeCounter, Player),
     betterOf(Pos1, Val1, Pos2, Val2, Player, BestPos, BestVal).
 
-betterOf(Pos0, Val0, _, Val1, Player, Pos0, Val0) :-   % Pos0 better than Pos1	
-    min_to_move(Pos0), max_now(Player)                        % MIN to move in Pos0
+betterOf(Pos0, Val0, _, Val1, Player, Pos0, Val0) :-   % Pos0 better than Pos1        
+    min_to_move(Pos0), max_now(Player),                        % MIN to move in Pos0
     Val0 > Val1, !                             % MAX prefers the greater value
-    ;
-    min_to_move(Pos0), min_now(Player)
+    	;
+    min_to_move(Pos0), min_now(Player),
     Val0 < Val1, !
-	;   
-    max_to_move(Pos0), max_now(Player)                        % MAX to move in Pos0
+        ;   
+    max_to_move(Pos0), max_now(Player),                        % MAX to move in Pos0
     Val0 > Val1, !                           % MIN prefers the lesser value
-	;   
-	max_to_move(Pos0), min_now(Player)
-	Val0 < Val1, !.
+        ;   
+    max_to_move(Pos0), min_now(Player),
+    Val0 > Val1, !.
+    
 
-betterOf(_, _, Pos1, Val1, Player, Pos1, Val1).        % Otherwise Pos1 better than Pos0
+betterOf(_, _, Pos1, Val1, Player, Pos1, Val1).
 
 % min_to_move(+Pos)
 % True if the next player to play is the MIN player.
@@ -53,33 +53,11 @@ max_now(computer).
 
 getPlayer(Pos, Player) :- nth0(0, Pos, Player).
 
-%endPos(Player,Board)
-endPos([X1,X2,X3,X4,X5,X6,X7,X8,X9]):-
-	equal(X1,X2,X3,X4,X5,X6,X7,X8,X9),
-    X1 = 15,
-    X2 = 15,
-    X3 = 15,
-    X4 = 15,
-    X5 = 15,
-    X6 = 15,
-    X7 = 15,
-    X8 = 15,
-    X9 = 15.
-
-% utility(Pos, Val)
-% This will return the proper Val for each Pos
-%utility([user,win,_],1). %toto win
-%utility([computer,win,_],1). %titi win
-%utility([_,draw,_],0). %no one win
-
 %simple heuristic that takes the potential score and divides it by the total score
-utility([user,B,Score], Val, Player) :- Val is Score/9.
-utility([computer,B,Score], Val, Player) :- Val is Score/9.
-
-      
-%equal True if they are the same
-%Opti à faire : equal pour dimension illimitée
-equal(X,X,X,X,X,X,X,X,X).
+utility([user,B,Score], Val, Player) :- not(Score = 0), Val is 1+(Score/9).
+utility([computer,B,Score], Val, Player) :- not(Score = 0), Val is 1+(Score/9).
+utility([computer,B,0], Val, Player) :- random(Val).
+utility([user,B,0], Val, Player) :- random(Val).
 
 % addTreeCounter(TreeCounter,NewTreeCounter)
 % This function will be used to stop the search in the tree
@@ -89,10 +67,6 @@ addTreeCounter(X,Y) :- Y is X + 1.
 % This function will add X to the List
 addList(X,L,[X|L]).
 
-game :-
-        createList(Board,0,9),
-		play(Board,0,0,user).
-=======
 %predicate to display our board
 displayBoard(L,UserScore,ComputerScore,Dim):-
     write('************ GAME **************'),nl,
@@ -259,7 +233,6 @@ gameOver(UserScore, ComputerScore,Dim) :-
 % Alternate Players
 nextPlayer(user,computer).
 nextPlayer(computer,user).
->>>>>>> refs/remotes/origin/master
 
 % Prédicate of play/4
 % +Board@ list: board game
@@ -302,38 +275,11 @@ userPlay(Board,NewBoard,OldScore,NewScore,NextPlayer,Dim) :-
 % +OldScore@ integer: the score before playing
 % -NewScore@ integer: the score after playing
 % -NextPlaying@ const: [ user | computer ] it's the next player turn
-<<<<<<< HEAD
-computerPlay(Board,NewBoard,OldScore,NewScore,NextPlayer) :- 
-    write('Computer playing...'), nl, 
-    minimax([computer,Board,OldScore],[NextPlayer,NewBoard,NewScore],_,0, computer),
-    %putEdge(Board, [0, 0], [Value1, Value2], NewBoard),
-    NewBoard = NextBoard.
-
-% Calculate Score
-score([Value1,Value2],OldScore,NewScore,CurrentPlayer,NextPlayer) :- 
-    	(   Value1 = 15, Value2 = 15 ),
-    	NewScore is OldScore + 2,!,
-    	NextPlayer = CurrentPlayer;
-    	(   Value1 = 15; Value2 = 15 ), 
-    	NewScore is OldScore + 1,!, 
-    	NextPlayer = CurrentPlayer;
-    	NewScore is OldScore, nextPlayer(CurrentPlayer,NextPlayer).
-
-% Verify if it's finished
-gameOver(UserScore, ComputerScore) :- 
-    Total is UserScore + ComputerScore,
-    Total = 9.
-
-% Alternate Players
-nextPlayer(user,computer).
-nextPlayer(computer,user).
-=======
 computerPlay(Board,NewBoard,OldScore,NewScore,NextPlayer,Dim) :- 
     write('Computer playing...'), nl,
     %minimax([computer,Board,OldScore],[_,_,_],_,0,Action,Index),
     ai(computer,Board,Action,Index,Dim),
     move(Action,Index,Dim,[computer,Board,OldScore],[NextPlayer,NewBoard,NewScore]).
->>>>>>> refs/remotes/origin/master
 
 
 ai(Player,Board,Action,Index,Dim):-
@@ -352,6 +298,18 @@ game(Dim) :-
         createList(Board,0,Dimension),
 		play(Board,0,0,user,Dim).
     
+
+
+
+    
+    
+    
+    
+    
+    
+    
+
+
 
 
 
