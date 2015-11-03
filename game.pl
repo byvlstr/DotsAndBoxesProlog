@@ -6,7 +6,7 @@
 minimax(Pos, BestNextPos, Val, 1) :-                     % Pos has successors
 	utility(Pos, Val).
 
-minimax(Pos, BestNextPos, Val, TreeCounter) :-                     % Pos has successors
+minimax(Pos, BestNextPos, Val, TreeCounter,Action,Index) :-                     % Pos has successors
     addTreeCounter(TreeCounter, NextTreeCounter),
     findall(NextPos, move(Action,Index,Pos, NextPos), NextPosList), % We get all possible NextPos from move
     best(NextPosList, BestNextPos, Val, NextTreeCounter),!.
@@ -64,7 +64,7 @@ endPos([X1,X2,X3,X4,X5,X6,X7,X8,X9]):-
 utility([user,B,Score], Val) :- Val is Score/9.
 utility([computer,B,Score], Val) :- Val is Score/9.
 
-boardH(
+
       
 %equal True if they are the same
 %Opti à faire : equal pour dimension illimitée
@@ -125,9 +125,8 @@ userPlay(Board,NewBoard,OldScore,NewScore,NextPlayer) :-
 % -NextPlaying@ const: [ user | computer ] it's the next player turn
 computerPlay(Board,NewBoard,OldScore,NewScore,NextPlayer) :- 
     write('Computer playing...'), nl, 
-    minimax([computer,Board,OldScore],[NextPlayer,NewBoard,NewScore],_,0),
-    %putEdge(Board, [0, 0], [Value1, Value2], NewBoard),
-    NewBoard = NextBoard.
+    minimax([computer,Board,OldScore],[_,_,_],_,0,Action,Index),
+    move(Action,Index,[computer,Board,OldScore],[NextPlayer,NewBoard,NewScore]).
 
 % Calculate Score
 score([Value1,Value2],OldScore,NewScore,CurrentPlayer,NextPlayer) :- 
