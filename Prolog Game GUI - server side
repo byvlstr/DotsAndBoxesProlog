@@ -287,7 +287,7 @@ server(Port) :- http_server(http_dispatch, [port(Port)]).
 
 %On joue pour user
 proceed_play(Request) :-
-format('Access-Control-Allow-Origin: http://localhost~n'),
+format('Access-Control-Allow-Origin: http://*~n'),
 http_parameters(Request,
 %recuperation des parametres d URL
 [
