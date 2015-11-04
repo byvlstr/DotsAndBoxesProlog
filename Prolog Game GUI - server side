@@ -169,11 +169,11 @@ nextPlayer(computer,user).
 % +UserScore@ integer: user score (Incremented by one)
 % +ComputerScore@ integer: computer score (Incremented by one)
 % +Player@ const: player turn [ user | computer ]
-play(Action,Index,Board,NewBoard,User1Score,NewUser1Score,User2Score,NewUser2Score,Player,NextPlayer,Dim,Mode) :-
+play(Action,Index,Board,NewBoard,User1Score,NewUser1Score,User2Score,NewUser2Score,Player,NextPlayer,Dim,Mode,Niveau) :-
 
 % User turn
 Player = user,
-(Mode = 3, computerPlay2(Board,NewBoard,User1Score,NewUser1Score,NextPlayer,Dim), NewUser2Score is User2Score);
+(Mode = 3, computerPlay2(Board,NewBoard,User1Score,NewUser1Score,NextPlayer,Dim,Niveau), NewUser2Score is User2Score);
 
 Player = user,
 userPlay(Action,Index,Board,NewBoard,User1Score,NewUser1Score,NextPlayer,Dim),
@@ -184,7 +184,7 @@ Player = computer,
 (Mode = 2, userPlay2(Action,Index,Board,NewBoard,User2Score,NewUser2Score,NextPlayer,Dim), NewUser1Score is User1Score);
 
 Player = computer,
-computerPlay(Board,NewBoard,User2Score,NewUser2Score,NextPlayer,Dim),
+computerPlay(Board,NewBoard,User2Score,NewUser2Score,NextPlayer,Dim,Niveau),
 NewUser1Score is User1Score.
 
 % Predicate user player/5
@@ -213,12 +213,14 @@ move(Action,Index,Dim,[computer,Board,OldScore],[NextPlayer,NewBoard,NewScore]).
 % +OldScore@ integer: the score before playing
 % -NewScore@ integer: the score after playing
 % -NextPlaying@ const: [ user | computer ] it's the next player turn
-computerPlay(Board,NewBoard,OldScore,NewScore,NextPlayer,Dim) :-
-ai(computer,Board,Action,Index,Dim),
+computerPlay(Board,NewBoard,OldScore,NewScore,NextPlayer,Dim,Niveau) :-
+(Niveau = 1,ai1(computer,Board,Action,Index,Dim));
+(Niveau = 2, ai2(computer,Board,Action,Index,Dim)),
 move(Action,Index,Dim,[computer,Board,OldScore],[NextPlayer,NewBoard,NewScore]).
 
-computerPlay2(Board,NewBoard,OldScore,NewScore,NextPlayer,Dim) :-
-ai(user,Board,Action,Index,Dim),
+computerPlay2(Board,NewBoard,OldScore,NewScore,NextPlayer,Dim,Niveau) :-
+(Niveau = 1,ai1(computer,Board,Action,Index,Dim));
+(Niveau = 2, ai2(computer,Board,Action,Index,Dim)),
 move(Action,Index,Dim,[user,Board,OldScore],[NextPlayer,NewBoard,NewScore]).
 
 
@@ -286,12 +288,13 @@ user(User, []),
 scoreUser1(ScoreUser1, [integer]),
 scoreUser2(ScoreUser2, [integer]),
 dim(Dim, [integer]),
-mode(Mode, [integer])
+mode(Mode, [integer]),
+niveau(Niveau,[integer])
 ]),
 format('Content-type: text/plain~n~n'),
 split_string(OldBoard, ".", "", TmpBoard),
 stringTokenizer(TmpBoard, Board),
-play(Action,Index,Board,NewBoard,ScoreUser1,NewScoreUser1,ScoreUser2,NewScoreUser2,User,NextPlayer,Dim,Mode),
+play(Action,Index,Board,NewBoard,ScoreUser1,NewScoreUser1,ScoreUser2,NewScoreUser2,User,NextPlayer,Dim,Mode,Niveau),
 
 %On envoie les reponses par json
 jsonState(NewBoard, NewScoreUser1, NewScoreUser2, NextPlayer).
