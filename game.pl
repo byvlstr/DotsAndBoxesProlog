@@ -36,7 +36,7 @@ displayWinner(UserScore,ComputerScore) :-
     write('You lost :(');
     
     % Equality
-    write('Replay :-').
+    write('Draw :-').
 
 % Include files
 % Creation de la liste
@@ -72,9 +72,6 @@ reaction(top,bottom).
 reaction(left,right).
 reaction(right,left).
 
-
-%(edge filled,index offset,value added to neighbour)
-%Tells us who is the neighbour and how its value should be modified
 
 %move predicate
 move(Action,Index,Dim,[Player,Board,OldScore],[NextPlayer,NewBoard,NewScore]):-
@@ -155,7 +152,7 @@ score([Value1,Value2],OldScore,NewScore,CurrentPlayer,NextPlayer) :-
     	NextPlayer = CurrentPlayer;
     	NewScore is OldScore, nextPlayer(CurrentPlayer,NextPlayer).
 
-% Verify if it's finished
+% Verify if its finished
 gameOver(UserScore, ComputerScore,Dim) :- 
     Total is UserScore + ComputerScore,
     MaxScore is Dim*Dim,
@@ -171,7 +168,7 @@ nextPlayer(computer,user).
 % +ComputerScore@ integer: computer score (Incremented by one)
 % +Player@ const: player turn [ user | computer ] 
 play(Board,UserScore,ComputerScore,Player,Dim) :-
-    % Verify if it's the game is finished 
+    % Verify if its the game is finished 
     gameOver(UserScore,ComputerScore,Dim),
     displayWinner(UserScore,ComputerScore);
     
@@ -180,7 +177,7 @@ play(Board,UserScore,ComputerScore,Player,Dim) :-
     
     % User turn
 	Player = user, 		
-		userPlay(Board,NewBoard,UserScore,NewUserScore,NextPlayer,Dim),
+		computerPlay(Board,NewBoard,UserScore,NewUserScore,NextPlayer,Dim),
     	play(NewBoard,NewUserScore,ComputerScore,NextPlayer,Dim);
     
     % Computer turn
@@ -194,7 +191,7 @@ play(Board,UserScore,ComputerScore,Player,Dim) :-
 % +NewBoard@ list: the new board after playing
 % +OldScore@ integer: the score before playing
 % -NewScore@ integer: the score after playing
-% -NextPlaying@ const: [ user | computer ] it's the next player turn
+% -NextPlaying@ const: [ user | computer ] its the next player turn
 userPlay(Board,NewBoard,OldScore,NewScore,NextPlayer,Dim) :- 
 	write('Play : '), 
 	read(Action), read(Index),
@@ -205,7 +202,7 @@ userPlay(Board,NewBoard,OldScore,NewScore,NextPlayer,Dim) :-
 % +NewBoard@ list: the new board after playing
 % +OldScore@ integer: the score before playing
 % -NewScore@ integer: the score after playing
-% -NextPlaying@ const: [ user | computer ] it's the next player turn
+% -NextPlaying@ const: [ user | computer ] its the next player turn
 computerPlay(Board,NewBoard,OldScore,NewScore,NextPlayer,Dim) :- 
     write('Computer playing...'), nl,
     %minimax([computer,Board,OldScore],[_,_,_],_,0,Action,Index),

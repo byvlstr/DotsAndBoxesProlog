@@ -1,7 +1,7 @@
 :- use_module(game).
 :-use_module(move).
 :-use_module(display).
-:-use_module(iARegle1).
+:-use_module(iARegle2).
 :-['util.pl'].
 :- use_module(library(http/thread_httpd)).
 :- use_module(library(http/http_dispatch)).
