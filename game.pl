@@ -3,24 +3,24 @@
 % minimax(Pos, BestNextPos, Val)
 % Pos is a position, Val is its minimax value.
 % Best move from Pos leads to position BestNextPos.
-minimax(Pos, BestNextPos, Val, 1, Player) :-                     % Pos has successors
+minimax(Pos, BestNextPos, Val, 1, Dim, Player) :-                     % Pos has successors
         utility(Pos, Val, Player).
 
-minimax(Pos, BestNextPos, Val, TreeCounter, _) :-                     % Pos has successors
+minimax(Pos, BestNextPos, Val, TreeCounter, Dim, _) :-                     % Pos has successors
     getPlayer(Pos, PlayerPos),
     addTreeCounter(TreeCounter, NextTreeCounter),
-    findall(NextPos, move(Action,Index,Pos, NextPos), NextPosList), % We get all possible NextPos from move
-    best(NextPosList, BestNextPos, Val, NextTreeCounter, PlayerPos),!.
+    findall(NextPos, move(Action,Index, Dim, Pos, NextPos), NextPosList), % We get all possible NextPos from move
+    best(NextPosList, BestNextPos, Val, NextTreeCounter, Dim, PlayerPos),!.
 
-minimax(Pos, _, Val, _, Player) :-                     % Pos has no successors
+minimax(Pos, _, Val, _, Dim, Player) :-                     % Pos has no successors
     utility(Pos, Val, Player).                                                   % End of the tree
 
-best([Pos], Pos, Val, TreeCounter, Player) :-
-    minimax(Pos, _, Val, TreeCounter, Player), !.
+best([Pos], Pos, Val, TreeCounter, Dim, Player) :-
+    minimax(Pos, _, Val, TreeCounter, Dim, Player), !.
 
-best([Pos1 | PosList], BestPos, BestVal, TreeCounter, Player) :-
-    minimax(Pos1, _, Val1, TreeCounter, Player),
-    best(PosList, Pos2, Val2, TreeCounter, Player),
+best([Pos1 | PosList], BestPos, BestVal, TreeCounter, Dim, Player) :-
+    minimax(Pos1, _, Val1, TreeCounter, Dim, Player),
+    best(PosList, Pos2, Val2, TreeCounter, Dim, Player),
     betterOf(Pos1, Val1, Pos2, Val2, Player, BestPos, BestVal).
 
 betterOf(Pos0, Val0, _, Val1, Player, Pos0, Val0) :-   % Pos0 better than Pos1        
@@ -277,8 +277,8 @@ userPlay(Board,NewBoard,OldScore,NewScore,NextPlayer,Dim) :-
 % -NextPlaying@ const: [ user | computer ] it's the next player turn
 computerPlay(Board,NewBoard,OldScore,NewScore,NextPlayer,Dim) :- 
     write('Computer playing...'), nl,
-    %minimax([computer,Board,OldScore],[_,_,_],_,0,Action,Index),
-    ai(computer,Board,Action,Index,Dim),
+    minimax([computer,Board,OldScore],[_,_,_],_,0,computer,Action,Index),
+    %ai(computer,Board,Action,Index,Dim),
     move(Action,Index,Dim,[computer,Board,OldScore],[NextPlayer,NewBoard,NewScore]).
 
 
