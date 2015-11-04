@@ -1,4 +1,4 @@
-:-module(move,[move/5,score/5]).
+:-module(move,[move/5,score/5,moveaux/7]).
 
 %(edge filled,value)
 %for filling in edges, corresponds to value that needs to be added 
