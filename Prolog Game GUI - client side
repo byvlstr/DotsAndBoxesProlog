@@ -73,7 +73,7 @@ body {
 	color:#2196F3;
 	border-color:#2196F3;
 }
-.intro p.choix_taille, .intro p.choix_niveau {
+.intro p.choix_taille, .intro p.choix_niveau, .intro p.choix_niveau2 {
 	font-size: 1.2em;
 	text-transform: uppercase;
 	color: #2196F3;
@@ -240,8 +240,9 @@ var currentPlayer = "user";
 var currentBoard = [];
 var grilleTaille = 3;
 var mode = 1;
-var niveau = 1;
 
+var niveau = 4;
+var niveau2 = 4;
 
 
 var winSound = new buzz.sound( "win", { formats: ["mp3" ]});
@@ -251,6 +252,7 @@ var clickSound = new buzz.sound( "click", { formats: ["mp3" ]});
 $(document).on("click", ".type_jeu", function(e) {
 	grilleTaille = $(".intro .choix_taille_grille").val();
 	niveau = $(".intro .choix_niveau_difficulte").val();
+	niveau2 = $(".intro .choix_niveau_difficulte2").val();
 	
 	$(".intro").fadeOut(function() { 
 		$(".jeu").fadeIn();
@@ -435,6 +437,11 @@ function move(index, action) {
 	
 	board += currentBoard[grilleTaille*grilleTaille -1];	
 
+	//on active le 2e niveau d'IA lorsque 2 ordis se confrontent
+	curNiveau = niveau;
+	if(mode == 3 && currentPlayer == "user")
+		curNiveau = niveau2;
+
 	jQuery.ajax({
 		url: 'http://localhost:5000/game',
 		data : {
@@ -446,7 +453,7 @@ function move(index, action) {
 			"user" : currentPlayer,
 			"dim":grilleTaille,
 			"mode":mode,
-			"niveau":niveau
+			"niveau":curNiveau
 		},
 		type:"GET",
 		dataType: 'JSON',
@@ -483,14 +490,12 @@ function move(index, action) {
 			$("#score_user").text(data.score_user1);
 			$("#score_computer").text(data.score_user2);
 			
-			if(parseInt($("#score_user").text()) + parseInt($("#score_computer").text())  == grilleTaille*grilleTaille) {
-				if(parseInt($("#score_user").text()) > parseInt($("#score_computer").text()))
-					$("#user_win").fadeIn();
-				else if(parseInt($("#score_user").text()) < parseInt($("#score_computer").text()))
-					$("#computer_win").fadeIn();
-				else
+			if(data.game_over) {
+				if(data.gagnant == "aucun")
 					$("#user_draw").fadeIn();
-				
+				else
+					$("#"+data.gagnant+"_win").fadeIn();
+					
 				$("#mask").fadeIn();
 				return;
 			}
@@ -584,6 +589,14 @@ function pad (str, max) {
       <br />
       <p  class="choix_niveau">Niveau de jeu</p>
       <select class="choix_niveau_difficulte">
+        <option value="1">IA bête</option>
+        <option value="2">IA moins bête</option>
+        <option value="3">Minimax</option>
+        <option value="4" selected="selected">Alpha beta</option>
+      </select>
+      <br />
+      <p  class="choix_niveau2">2e Niveau de jeu</p>
+      <select class="choix_niveau_difficulte2">
         <option value="1">IA bête</option>
         <option value="2">IA moins bête</option>
         <option value="3">Minimax</option>

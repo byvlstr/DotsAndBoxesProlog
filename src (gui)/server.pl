@@ -2,6 +2,7 @@
 :-use_module(move).
 :-use_module(display).
 :-use_module(iARegle2).
+:-use_module(iARegle1).
 :-['util.pl'].
 :- use_module(library(http/thread_httpd)).
 :- use_module(library(http/http_dispatch)).
@@ -30,12 +31,14 @@ board(OldBoard, [string]),
 user(User, []),
 scoreUser1(ScoreUser1, [integer]),
 scoreUser2(ScoreUser2, [integer]),
-dim(Dim, [integer])
+dim(Dim, [integer]),
+mode(Mode, [integer]),
+niveau(Niveau,[integer])
 ]),
 format('Content-type: text/plain~n~n'),
 split_string(OldBoard, ".", "", TmpBoard),
 stringTokenizer(TmpBoard, Board),
-play(Action,Index,Board,NewBoard,ScoreUser1,NewScoreUser1,ScoreUser2,NewScoreUser2,User,NextPlayer,Dim),
+play(Action,Index,Board,NewBoard,ScoreUser1,NewScoreUser1,ScoreUser2,NewScoreUser2,User,NextPlayer,Dim,Mode,Niveau),
 
 %On envoie les reponses par json
 jsonState(NewBoard, NewScoreUser1, NewScoreUser2, NextPlayer).

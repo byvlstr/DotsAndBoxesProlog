@@ -1,6 +1,6 @@
-:-module(iARegle1,[ai/5]).
+:-module(iARegle1,[ai1/5]).
 
-ai(Player,Board,Action,Index,Dim):-
+ai1(Player,Board,Action,Index,Dim):-
     find(Board,Action,Index,Player,Dim).
     
 find(Board,Action,Index,Player,Dim):-
