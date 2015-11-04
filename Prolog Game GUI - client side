@@ -240,7 +240,7 @@ var currentPlayer = "user";
 var currentBoard = [];
 var grilleTaille = 3;
 var mode = 1;
-var niveau = 4;
+var niveau = 1;
 
 
 
