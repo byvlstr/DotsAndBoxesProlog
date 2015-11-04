@@ -142,7 +142,7 @@ div.popup .rejouer img { margin-bottom:-2px; }
 <script type="text/javascript">
 var currentPlayer = "user";
 var currentBoard = [];
-var grilleTaille = 7;
+var grilleTaille = 4;
 
 $(document).ready(function(e) {
 	genererGrillePoints();
