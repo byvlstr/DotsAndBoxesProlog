@@ -7,10 +7,10 @@
 body {
 	font-family:"helvetica neue", arial;
 	color:#393939;
+	margin-top:30px;
 }
 table {
-	width:600px;
-	height:600px;
+	width:750px;
 }
 table td { 
 	width:200px;
@@ -68,7 +68,7 @@ table td {
 }
 .score.left {
 	float: left;
-	width: 25%;
+	width: 20%;
 	text-align: right;
 	color: rgb(5, 160, 255);
 }
@@ -83,7 +83,7 @@ table td {
 }
 .score.right {
 	float: right;
-	width: 25%;
+	width: 20%;
 	text-align: left;
 	color: rgb(255, 95, 78);
 }
@@ -141,7 +141,13 @@ div.popup .rejouer img { margin-bottom:-2px; }
 <script src="jquery-1.7.2.min.js"></script>
 <script type="text/javascript">
 var currentPlayer = "user";
-var currentBoard = [0,0,0,0,0,0,0,0,0];
+var currentBoard = [];
+var grilleTaille = 7;
+
+$(document).ready(function(e) {
+	genererGrillePoints();
+      genererGrille(grilleTaille);
+});
 
 $(document).on("click", ".border:not(.on)", function() {
 	
@@ -156,7 +162,7 @@ $(document).on("click", ".rejouer", function() {
 	
 	$(".border.on").removeClass("on user computer");
 	currentPlayer = "user";
-	currentBoard = [0,0,0,0,0,0,0,0,0];
+	genererGrillePoints();
 	
 	$("#score_user").text(0);
 	$("#score_computer").text(0);
@@ -165,32 +171,131 @@ $(document).on("click", ".rejouer", function() {
 	$(".popup").fadeOut();
 });
 
+function genererGrillePoints() {
+	
+	for(i=0; i < grilleTaille*grilleTaille; i++)
+		currentBoard[i] = 0;
+}
+
+function genererGrille(nb) {
+	$("#grille").empty();
+	
+	index=0;
+	
+	$("#grille").append("<tr></tr>");
+	
+	$("#grille tr").last().append('  \
+		<td id="'+(index++)+'"> \
+			<div class="point" style="left: -5px;top: -5px;"></div> \
+			<div class="border left"></div> \
+			<div class="border top"></div> \
+			<div class="border right"></div> \
+			<div class="border bottom"></div> \
+		 </td>');
+	 
+	for(j=0; j < nb-2; j++) {
+		$("#grille tr").last().append('  \
+				<td id="'+(index++)+'"> \
+					<div class="point" style="left: -13px;top: -6px;"></div> \
+					<div class="border top"></div> \
+					<div class="border right"></div> \
+					<div class="border bottom"></div> \
+				</td>');
+	}
+	$("#grille tr").last().append('  \
+		<td id="'+(index++)+'"> \
+			<div class="point" style="left: -13px;top: -6px;"></div> \
+			<div class="point" style="right: -5px;top: -6px;"></div> \
+			<div class="border top"></div> \
+			<div class="border right"></div> \
+			<div class="border bottom"></div> \
+	     </td>');
+		     
+	for(i=0; i < nb-2; i++) {
+		$("#grille").append("<tr></tr>");
+		
+		$("#grille tr").last().append('  \
+			<td id="'+(index++)+'"> \
+            	<div class="point" style="left: -5px;top: -13px;"></div> \
+				<div class="border left"></div> \
+				<div class="border right"></div> \
+				<div class="border bottom"></div> \
+			 </td>');
+		 
+		for(j=0; j < nb-2; j++) {
+			$("#grille tr").last().append('  \
+					<td id="'+(index++)+'"> \
+			            	<div class="point" style="left: -13px;top: -13px;"></div> \
+						<div class="border right"></div> \
+						<div class="border bottom"></div> \
+					</td>');
+		}
+		$("#grille tr").last().append('  \
+			<td id="'+(index++)+'"> \
+				<div class="point" style="left: -13px;top: -13px;"></div> \
+				<div class="point" style="right: -5px;top: -13px;"></div> \
+				<div class="border right"></div> \
+				<div class="border bottom"></div> \
+		     </td>');
+	}
+	$("#grille").append("<tr></tr>");
+	
+	$("#grille tr").last().append('  \
+		<td id="'+(index++)+'"> \
+			<div class="point" style="left: -5px;top: -13px;"></div> \
+			<div class="point" style="left: -5px;bottom: -5px;"></div> \
+			<div class="border left"></div> \
+			<div class="border right"></div> \
+			<div class="border bottom"></div> \
+		 </td>');
+	 
+	for(j=0; j < nb-2; j++) {
+		$("#grille tr").last().append('  \
+				<td id="'+(index++)+'"> \
+					<div class="point" style="left: -13px;top: -13px;"></div> \
+					<div class="point" style="left: -13px;bottom: -5px;"></div> \
+					<div class="border right"></div> \
+					<div class="border bottom"></div> \
+				</td>');
+	}
+	$("#grille tr").last().append('  \
+		<td id="'+(index++)+'"> \
+			<div class="point" style="left: -13px;top: -13px;"></div> \
+			<div class="point" style="right: -5px;top: -13px;"></div> \
+			<div class="point" style="left: -13px;bottom: -5px;"></div> \
+			<div class="point" style="right: -5px;bottom: -5px;"></div> \
+			<div class="border right"></div> \
+			<div class="border bottom"></div> \
+	     </td>');
+	     
+	$("#grille td").css("height", $("#grille td").width() + "px");
+}
 
 function move(index, action) {
+	board = "";
+	
+	for(i=0; i < grilleTaille*grilleTaille -1; i++)
+		board +=  currentBoard[i]+".";
+	
+	board += currentBoard[grilleTaille*grilleTaille -1];	
+
 	jQuery.ajax({
 		url: 'http://localhost:5000/game',
-		data: {
+		data : {
 			"turnIndex" : index,
 			"turnAction" : action,
-			"boardv1" : currentBoard[0],
-			"boardv2" : currentBoard[1],
-			"boardv3" : currentBoard[2],
-			"boardv4" : currentBoard[3],
-			"boardv5" : currentBoard[4],
-			"boardv6" : currentBoard[5],
-			"boardv7" : currentBoard[6],
-			"boardv8" : currentBoard[7],
-			"boardv9" : currentBoard[8],
-			"score" : $("#score_"+currentPlayer).text(),
-			"user" : currentPlayer
+			"board" : board,
+			"scoreUser1" : $("#score_user").text(),
+			"scoreUser2" : $("#score_computer").text(),
+			"user" : currentPlayer,
+			"dim":grilleTaille
 		},
 		type:"GET",
 		dataType: 'JSON',
 		success: function(data) {
-			
 			currentBoard = data.board;
 			
-			for(i = 0; i < 9; i++) {
+			for(i = 0; i < grilleTaille*grilleTaille; i++) {
 				bin = parseInt(currentBoard[i], 10).toString(2);
 				bin = pad(bin, 4);
 				bin = bin.split("");
@@ -208,9 +313,10 @@ function move(index, action) {
 					$("td#"+i).find(".right").addClass("on "+ currentPlayer);
 			}
 			
-			$("#score_"+currentPlayer).text(data.score);
+			$("#score_user").text(data.score_user1);
+			$("#score_computer").text(data.score_user2);
 			
-			if(parseInt($("#score_user").text()) + parseInt($("#score_computer").text())  == 9) {
+			if(parseInt($("#score_user").text()) + parseInt($("#score_computer").text())  == grilleTaille*grilleTaille) {
 				if(parseInt($("#score_user").text()) > parseInt($("#score_computer").text()))
 					$("#user_win").fadeIn();
 				else
@@ -267,80 +373,7 @@ function pad (str, max) {
       <p id="score_computer">0</p>
 </div>
 
-<table border="0" cellspacing="0" align="center">
-	<tr>
-      	<td id="0">
-            	<div class="point" style="left: -5px;top: -5px;"></div>
-                  
-            	<div class="border left"></div>
-            	<div class="border top"></div>
-            	<div class="border right"></div>
-            	<div class="border bottom"></div>
-             </td>
-      	<td id="1">
-            	<div class="point" style="left: -13px;top: -6px;"></div>
-                  
-            	<div class="border top"></div>
-            	<div class="border right"></div>
-            	<div class="border bottom"></div>
-            </td>
-      	<td id="2">
-            	<div class="point" style="left: -13px;top: -6px;"></div>
-            	<div class="point" style="right: -5px;top: -6px;"></div>
-      
-            	<div class="border top"></div>
-            	<div class="border right"></div>
-            	<div class="border bottom"></div>
-           </td>
-      </tr>
-	<tr>
-      	<td id="3">
-            	<div class="point" style="left: -5px;top: -13px;"></div>
-                  
-            	<div class="border left"></div>
-            	<div class="border right"></div>
-            	<div class="border bottom"></div>
-             </td>
-      	<td id="4">
-            	<div class="point" style="left: -13px;top: -13px;"></div>
-                  
-            	<div class="border right"></div>
-            	<div class="border bottom"></div>
-            </td>
-      	<td id="5">
-            	<div class="point" style="left: -13px;top: -13px;"></div>
-            	<div class="point" style="right: -5px;top: -13px;"></div>
-                  
-            	<div class="border right"></div>
-            	<div class="border bottom"></div>
-           </td>
-      </tr>
-	<tr>
-      	<td id="6">
-            	<div class="point" style="left: -5px;top: -13px;"></div>
-            	<div class="point" style="left: -5px;bottom: -5px;"></div>
-                  
-            	<div class="border left"></div>
-            	<div class="border right"></div>
-            	<div class="border bottom"></div>
-             </td>
-      	<td id="7">
-            	<div class="point" style="left: -13px;top: -13px;"></div>
-            	<div class="point" style="left: -13px;bottom: -5px;"></div>
-                  
-            	<div class="border right"></div>
-            	<div class="border bottom"></div>
-            </td>
-      	<td id="8">
-            	<div class="point" style="left: -13px;top: -13px;"></div>
-            	<div class="point" style="right: -5px;top: -13px;"></div>
-            	<div class="point" style="left: -13px;bottom: -5px;"></div>
-            	<div class="point" style="right: -5px;bottom: -5px;"></div>
-                  
-            	<div class="border right"></div>
-            	<div class="border bottom"></div>
-           </td>
-      </tr>
+<table id="grille" border="0" cellspacing="0" align="center">
 </table>
 <body>
 </body>
