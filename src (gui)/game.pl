@@ -47,7 +47,8 @@ move(Action,Index,Dim,[user,Board,OldScore],[NextPlayer,NewBoard,NewScore]).
 % -NewScore@ integer: the score after playing
 % -NextPlaying@ const: [ user | computer ] its the next player turn
 computerPlay(Board,NewBoard,OldScore,NewScore,NextPlayer,Dim) :-
-ai(computer,Board,Action,Index,Dim),
+%ai(computer,Board,Action,Index,Dim),
+minimax([_,_,[computer,Board,OldScore]],[Action, Index,[_,_,_]],_,0,Dim),
 move(Action,Index,Dim,[computer,Board,OldScore],[NextPlayer,NewBoard,NewScore]).
 
 
