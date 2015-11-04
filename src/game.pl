@@ -1,9 +1,8 @@
 :-use_module(move).
 :-use_module(display).
 :-use_module(iARegle1).
+:-use_module(iAMinimax).
 :-['util.pl'].
-
-
 
 
 % Verify if its finished
@@ -55,8 +54,8 @@ userPlay(Board,NewBoard,OldScore,NewScore,NextPlayer,Dim) :-
 % -NextPlaying@ const: [ user | computer ] its the next player turn
 computerPlay(Board,NewBoard,OldScore,NewScore,NextPlayer,Dim) :- 
     write('Computer playing...'), nl,
-    %minimax([computer,Board,OldScore],[_,_,_],_,0,Action,Index),
-    ai(computer,Board,Action,Index,Dim),
+    minimax([_,_,[computer,Board,OldScore]],[Action, Index,[_,_,_]],_,0,Dim),
+    %ai(computer,Board,Action,Index,Dim),
     move(Action,Index,Dim,[computer,Board,OldScore],[NextPlayer,NewBoard,NewScore]).
 
 game(Dim) :-
