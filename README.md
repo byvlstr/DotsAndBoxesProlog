@@ -1,5 +1,7 @@
 # DotsAndBoxesProlog
 Dots and Boxes Game in Prolog - INSA 4IF Project
+Group of 7 students: Lingfan, Thomas, Iliass, Hugo, Orlando, Zineb, Valentin
+Duration : 2-3 weeks
 
 INSTRUCTIONS
 -------------
