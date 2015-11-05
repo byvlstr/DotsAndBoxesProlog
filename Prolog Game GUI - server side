@@ -294,10 +294,17 @@ stringTokenizer(TmpBoard, Board),
 play(Action,Index,Board,NewBoard,ScoreUser1,NewScoreUser1,ScoreUser2,NewScoreUser2,User,NextPlayer,Dim,Mode),
 
 %On envoie les reponses par json
-jsonState(NewBoard, NewScoreUser1, NewScoreUser2, NextPlayer).
+jsonState(NewBoard, NewScoreUser1, NewScoreUser2, NextPlayer, Dim).
 
-%Container JSON
-jsonState([H|T], ScoreUser1, ScoreUser2, NextPlayer) :- format('{'), jsonBoard([H|T]), jsonScoreUser1(ScoreUser1), jsonScoreUser2(ScoreUser2), jsonPlayer(NextPlayer), format('}').
+
+%Predicat pour envoyer la reponse JSON
+jsonState([H|T], ScoreUser1, ScoreUser2, NextPlayer, Dim) :- format('{'),
+jsonBoard([H|T]), jsonScoreUser1(ScoreUser1), jsonScoreUser2(ScoreUser2),
+% On verifie si le jeu est termine
+(gameOver(ScoreUser1, ScoreUser2, Dim), jsonGameOver(ScoreUser1, ScoreUser2), format('}'));
+
+format('"game_over" : false, '), jsonPlayer(NextPlayer), format('}').
+
 
 %Affichage de la board en JSON
 jsonBoard([H|T]) :-
@@ -314,3 +321,9 @@ jsonScoreUser2(X) :- format('"score_user2" : '), format('~d,', X).
 
 %Affichage du prochain joueur
 jsonPlayer(X) :- format('"next_player" : "'), format('~w', X), format('"').
+
+%Affichage du resultat en cas de fin de jeu
+jsonGameOver(ScoreUser1, ScoreUser2) :- format('"game_over" : true, "gagnant" :"'),
+(ScoreUser1 > ScoreUser2,format('user"') );
+(ScoreUser1 < ScoreUser2,format('computer"') );
+(ScoreUser1 = ScoreUser2,format('aucun"') ).

@@ -9,6 +9,10 @@ INSTRUCTIONS
 + Open it in a web browser
 + Start playing!
 
+YOUTUBE SCREENCAST
+-------------
+Link : https://youtu.be/pz49lRDOs8A
+
 COMPATIBLE BROWSERS (FOR NOW)
 ------------------
 + Firefox

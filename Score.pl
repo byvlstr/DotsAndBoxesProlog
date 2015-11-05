@@ -5,13 +5,13 @@
 %P2 the score of player2
 %P2X the new score of both players
 
-score(B, P, P1, P2,P21,P22) :-    P = 1,                                        
-                          check(B,P1,P2),                               
-                          P21 is P1+1.                                   
+score(Board, Player, ScoreP1, ScoreP2,NewScoreP1,NewScoreP2) :-    Player = user,                                        
+                          check(B,ScoreP1,ScoreP2),                               
+                          NewScoreP1 is ScoreP1+1,NewScoreP2 = ScoreP2.                                   
                                                                         
-score(B, P, P1, P2,P21,P22) :-    P = 2,                                       
-                          check(B,P1,P2),                              
-                          P22 is P2+1. 
+score(B, P, P1, P2,P21,P22) :-    Player = ,                                       
+                          check(B,ScoreP1,ScoreP2),                               
+                          NewScoreP2 is ScoreP1+1,NewScoreP1 = ScoreP1. 
 
 
 %an intermediary predicate that compares the number of full boxes
