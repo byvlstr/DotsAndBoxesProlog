@@ -1,14 +1,7 @@
-:-module(iAMinimax,[minimax/5]).
+:-module(iAMinimax,[minimax/6]).
 
-<<<<<<< HEAD
 minimax(State, BestNextState , Val, 2, Dim, PlayerBefore) :-
 	heuristique(State, Val, Dim, PlayerBefore).
-=======
-%To Call : minimax([_,_,[computer,Board,OldScore]],[Action, Index,[_,_,_]],_,0,Dim)
-
-minimax(State, BestNextState , Val, 3, Dim) :-
-	heuristique(State, Val, Dim).
->>>>>>> origin/master
 
 minimax(State, BestNextState, Val, TreeCounter, Dim,_) :-
 	getPossibilities(State,Dim,TreeCounter,NextStateList,NextTreeCounter),
