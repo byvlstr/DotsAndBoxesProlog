@@ -2,6 +2,7 @@
 :-use_module(move).
 :-use_module(display).
 :-use_module(iARegle2).
+:-use_module(iARegle1).
 :-['util.pl'].
 :- use_module(library(http/thread_httpd)).
 :- use_module(library(http/http_dispatch)).
@@ -30,18 +31,27 @@ board(OldBoard, [string]),
 user(User, []),
 scoreUser1(ScoreUser1, [integer]),
 scoreUser2(ScoreUser2, [integer]),
-dim(Dim, [integer])
+dim(Dim, [integer]),
+mode(Mode, [integer]),
+niveau(Niveau,[integer])
 ]),
 format('Content-type: text/plain~n~n'),
 split_string(OldBoard, ".", "", TmpBoard),
 stringTokenizer(TmpBoard, Board),
-play(Action,Index,Board,NewBoard,ScoreUser1,NewScoreUser1,ScoreUser2,NewScoreUser2,User,NextPlayer,Dim),
+play(Action,Index,Board,NewBoard,ScoreUser1,NewScoreUser1,ScoreUser2,NewScoreUser2,User,NextPlayer,Dim,Mode,Niveau),
 
 %On envoie les reponses par json
-jsonState(NewBoard, NewScoreUser1, NewScoreUser2, NextPlayer).
+jsonState(NewBoard, NewScoreUser1, NewScoreUser2, NextPlayer, Dim).
 
-%Container JSON
-jsonState([H|T], ScoreUser1, ScoreUser2, NextPlayer) :- format('{'), jsonBoard([H|T]), jsonScoreUser1(ScoreUser1), jsonScoreUser2(ScoreUser2), jsonPlayer(NextPlayer), format('}').
+
+%Predicat pour envoyer la reponse JSON
+jsonState([H|T], ScoreUser1, ScoreUser2, NextPlayer, Dim) :- format('{'),
+jsonBoard([H|T]), jsonScoreUser1(ScoreUser1), jsonScoreUser2(ScoreUser2),
+% On verifie si le jeu est termine
+(gameOver(ScoreUser1, ScoreUser2, Dim), jsonGameOver(ScoreUser1, ScoreUser2), format('}'));
+
+format('"game_over" : false, '), jsonPlayer(NextPlayer), format('}').
+
 
 %Affichage de la board en JSON
 jsonBoard([H|T]) :-
@@ -59,6 +69,8 @@ jsonScoreUser2(X) :- format('"score_user2" : '), format('~d,', X).
 %Affichage du prochain joueur
 jsonPlayer(X) :- format('"next_player" : "'), format('~w', X), format('"').
 
-stringTokenizer([], []).
-stringTokenizer([N|Ns], [Digit|Rest]):-
-atom_number(N, Digit),  stringTokenizer(Ns, Rest).
+%Affichage du resultat en cas de fin de jeu
+jsonGameOver(ScoreUser1, ScoreUser2) :- format('"game_over" : true, "gagnant" :"'),
+(ScoreUser1 > ScoreUser2,format('user"') );
+(ScoreUser1 < ScoreUser2,format('computer"') );
+(ScoreUser1 = ScoreUser2,format('aucun"') ).

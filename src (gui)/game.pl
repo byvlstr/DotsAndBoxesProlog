@@ -1,4 +1,4 @@
-:-module(game,[play/13]).
+:-module(game,[play/13,gameOver/3]).
 
 
 
@@ -71,9 +71,9 @@ move(Action,Index,Dim,[computer,Board,OldScore],[NextPlayer,NewBoard,NewScore]).
 
 computerPlay2(Board,NewBoard,OldScore,NewScore,NextPlayer,Dim,Niveau) :-
 (Niveau = 1, ai1(computer,Board,Action,Index,Dim)),
-move(Action,Index,Dim,[computer,Board,OldScore],[NextPlayer,NewBoard,NewScore]);
+move(Action,Index,Dim,[user,Board,OldScore],[NextPlayer,NewBoard,NewScore]);
 (Niveau = 2, ai2(computer,Board,Action,Index,Dim)),
-move(Action,Index,Dim,[computer,Board,OldScore],[NextPlayer,NewBoard,NewScore]).
+move(Action,Index,Dim,[user,Board,OldScore],[NextPlayer,NewBoard,NewScore]).
 
 
 ai(Player,Board,Action,Index,Dim):-
@@ -112,4 +112,5 @@ game(Dim) :-
 Dimension is Dim*Dim,
 createList(Board,0,Dimension),
 play(Board,0,0,user,Dim).
+
 
