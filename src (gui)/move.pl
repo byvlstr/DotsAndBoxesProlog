@@ -49,7 +49,7 @@ neighbour(Action,Index,Dim,Reaction,NeighIndex):-
     ( Action = right,NeighIndex is Index + 1,
         not(border(Action,Index,Dim)),reaction(Action,Reaction)  );    
     
-    ( NeighIndex = -1,Reaction = null  ).
+    ( NeighIndex = -1,Reaction = null  ). %there is no neighbour, take a null action
 
 %predicate that returns true if the move is a border case
 border(Action,Index,Dim):-
@@ -81,11 +81,14 @@ checkMove(Action,Board,Index):-
     action(Action,Bit),
     check(CurrentValue,Bit).
 
+%checks if the edge is filled using a bitwise and
 check(CurrentValue,Bit):-
     Check is CurrentValue /\ Bit,
     not(Check is Bit).
 
-% Calculate Score
+% Calculate Score and next player
+% +Value1: Value of the chosen box
+% +Value2: Value of the neighbouring box
 score([Value1,Value2],OldScore,NewScore,CurrentPlayer,NextPlayer) :- 
     	(   Value1 = 15, Value2 = 15 ),
     	NewScore is OldScore + 2,!,

@@ -1,10 +1,10 @@
 % Include files
-% Creation de la liste
+% List Creation
 createList([],_,0).
 createList([X],X,1).
 createList([X|L],X,N) :- plus(S,1,N), createList(L, X, S).
 
-% Remplacer un element dans la liste
+% Replace an element in a using its index
 replace([_|T], 0, X, [X|T]).
 replace([H|T], I, X, [H|R]):- I > -1, NI is I-1, replace(T, NI, X, R), !.
 replace(L, _, _, L).

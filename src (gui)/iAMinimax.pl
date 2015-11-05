@@ -1,5 +1,7 @@
 :-module(iAMinimax,[minimax/5]).
 
+%To Call : minimax([_,_,[computer,Board,OldScore]],[Action, Index,[_,_,_]],_,0,Dim)
+
 minimax(State, BestNextState , Val, 3, Dim) :-
 	heuristique(State, Val, Dim).
 

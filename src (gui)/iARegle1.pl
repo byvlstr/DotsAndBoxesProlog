@@ -1,5 +1,8 @@
 :-module(iARegle1,[ai1/5]).
 
+%This basic AI follows one simply rule
+%Complete the last edge of a box if possible
+%Other take a random action
 ai1(Player,Board,Action,Index,Dim):-
     find(Board,Action,Index,Player,Dim).
     

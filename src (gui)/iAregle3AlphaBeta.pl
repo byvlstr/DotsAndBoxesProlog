@@ -1,4 +1,6 @@
-% Predicate verify if player winn 
+
+
+% Predicate verify if player wins
 winner(UserScore, ComputerScore, Dim, computer) :- 
    gameOver(UserScore,ComputerScore,Dim), UserScore < ComputerScore.
 
@@ -62,5 +64,5 @@ testBest(Player,_Move,Value,Dim,D,Alpha,Beta,Moves,[UScore,CScore,Board],Record,
    Value =< Alpha, !, 
    evaluateAndChoose(Player,Moves,[UScore,CScore,Board],Dim,D,Alpha,Beta,Record,BestMove).
 
-ai(Player,Board,Action,Index,Dim,[UserScore,ComputerScore]):-
+aiAlpha(Player,Board,Action,Index,Dim,[UserScore,ComputerScore]):-
     alpha_beta(Player,2,[UserScore,ComputerScore,Board],-200,200,[Action,Index],_,Dim).
