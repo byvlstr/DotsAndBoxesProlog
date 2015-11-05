@@ -1,9 +1,11 @@
 :- use_module(game).
-:-use_module(move).
-:-use_module(display).
-:-use_module(iARegle2).
-:-use_module(iARegle1).
-:-['util.pl'].
+:- use_module(move).
+:- use_module(display).
+:- use_module(iARegle2).
+:- use_module(iARegle1).
+:- use_module(iAMinimax).
+:- ['iAregle3AlphaBeta.pl'].
+:- ['util.pl'].
 :- use_module(library(http/thread_httpd)).
 :- use_module(library(http/http_dispatch)).
 :- use_module(library(http/html_write)).
@@ -17,10 +19,11 @@ atom_number(N, Digit),  stringTokenizer(Ns, Rest).
 
 %PROLOG SERVER
 
-%Mise en place du server à ladresse http://localhost/game
+%Server at http://localhost/game
 :- http_handler(root(game), proceed_play,  []).
 server(Port) :- http_server(http_dispatch, [port(Port)]).
 
+%Handler for play requests from client
 proceed_play(Request) :-
 format('Access-Control-Allow-Origin: * ~n'),
 format('Access-Control-Allow-Headers: origin, x-requested-with, content-type ~n'),
@@ -44,11 +47,11 @@ split_string(OldBoard, ".", "", TmpBoard),
 stringTokenizer(TmpBoard, Board),
 play(Action,Index,Board,NewBoard,ScoreUser1,NewScoreUser1,ScoreUser2,NewScoreUser2,User,NextPlayer,Dim,Mode,Niveau),
 
-%On envoie les reponses par json
+%Send response in Json format
 jsonState(NewBoard, NewScoreUser1, NewScoreUser2, NextPlayer, Dim).
 
 
-%Predicat pour envoyer la reponse JSON
+%Predicat to send the Json response
 jsonState([H|T], ScoreUser1, ScoreUser2, NextPlayer, Dim) :- format('{'),
 jsonBoard([H|T]), jsonScoreUser1(ScoreUser1), jsonScoreUser2(ScoreUser2),
 % On verifie si le jeu est termine
@@ -57,23 +60,23 @@ jsonBoard([H|T]), jsonScoreUser1(ScoreUser1), jsonScoreUser2(ScoreUser2),
 format('"game_over" : false, '), jsonPlayer(NextPlayer), format('}').
 
 
-%Affichage de la board en JSON
+%Display the board using Json
 jsonBoard([H|T]) :-
 format('"board" : ['),
 atomic_list_concat([H|T], ',', Atom),
 format('~w,', Atom),
 format('""], ').
 
-%Affichage du nouveau score
+%Display new score
 jsonScoreUser1(X) :- format('"score_user1" : '), format('~d,', X).
 
-%Affichage du nouveau score
+%Display new score
 jsonScoreUser2(X) :- format('"score_user2" : '), format('~d,', X).
 
-%Affichage du prochain joueur
+%Display next player
 jsonPlayer(X) :- format('"next_player" : "'), format('~w', X), format('"').
 
-%Affichage du resultat en cas de fin de jeu
+%Display results at the end of the game
 jsonGameOver(ScoreUser1, ScoreUser2) :- format('"game_over" : true, "gagnant" :"'),
 (ScoreUser1 > ScoreUser2,format('user"') );
 (ScoreUser1 < ScoreUser2,format('computer"') );
