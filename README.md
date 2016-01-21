@@ -13,6 +13,12 @@ INSTRUCTIONS
 + Open it in a web browser
 + Start playing!
 
+Preview
+---
+![Home](https://raw.githubusercontent.com/byvlstr/DotsAndBoxesProlog/master/Preview/Home.png)
+
+![InGame](https://raw.githubusercontent.com/byvlstr/DotsAndBoxesProlog/master/Preview/InGame.png)
+
 YOUTUBE SCREENCAST
 -------------
 Link : https://youtu.be/pz49lRDOs8A
